@@ -48,17 +48,7 @@
     </dependency>
     <dependency>
       <groupId>com.dam.delta4j</groupId>
-      <artifactId>delta-json</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dam.delta4j</groupId>
       <artifactId>delta-updates-manager</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dam.delta4j</groupId>
-      <artifactId>delta-launcher</artifactId>
       <version>1.0</version>
     </dependency>
     <dependency>
