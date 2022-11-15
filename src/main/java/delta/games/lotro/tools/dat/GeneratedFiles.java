@@ -47,7 +47,11 @@ public class GeneratedFiles
   /**
    * Trait icons.
    */
-  public static final File TRAIT_ICONS=new File("../lotro-data/traits/traitIcons.zip").getAbsoluteFile();
+  public static final File TRAIT_ICONS_DIR=new File("../lotro-icons/traits").getAbsoluteFile();
+  /**
+   * Skirmish traits.
+   */
+  public static final File SKIRMISH_TRAITS=LotroCoreConfig.getInstance().getFile(DataFiles.SKIRMISH_TRAITS);
   /**
    * Stat tomes.
    */
@@ -57,17 +61,13 @@ public class GeneratedFiles
    */
   public static final File VIRTUES=LotroCoreConfig.getInstance().getFile(DataFiles.VIRTUES);
   /**
-   * Virtue icons.
-   */
-  public static final File VIRTUE_ICONS=new File("../lotro-data/virtues/virtueIcons.zip").getAbsoluteFile();
-  /**
    * Skills.
    */
   public static final File SKILLS=LotroCoreConfig.getInstance().getFile(DataFiles.SKILLS);
   /**
    * Skill icons.
    */
-  public static final File SKILL_ICONS=new File("../lotro-data/skills/skillIcons.zip").getAbsoluteFile();
+  public static final File SKILL_ICONS_DIR=new File("../lotro-icons/skills").getAbsoluteFile();
   /**
    * Titles.
    */
@@ -147,7 +147,7 @@ public class GeneratedFiles
   /**
    * Relic icons.
    */
-  public static final File RELIC_ICONS=new File("../lotro-relics/relicIcons.zip").getAbsoluteFile();
+  public static final File RELIC_ICONS_DIR=new File("../lotro-icons/relics").getAbsoluteFile();
   /**
    * Relic melding recipes.
    */
@@ -246,17 +246,9 @@ public class GeneratedFiles
    */
   public static final File MOUNTS=LotroCoreConfig.getInstance().getFile(DataFiles.MOUNTS);
   /**
-   * Mount icons.
-   */
-  public static final File MOUNT_ICONS=new File("../lotro-data/mounts/mountIcons.zip").getAbsoluteFile();
-  /**
    * Cosmetic pets.
    */
   public static final File PETS=LotroCoreConfig.getInstance().getFile(DataFiles.PETS);
-  /**
-   * Pet icons.
-   */
-  public static final File PET_ICONS=new File("../lotro-data/pets/petIcons.zip").getAbsoluteFile();
   /**
    * Collections.
    */

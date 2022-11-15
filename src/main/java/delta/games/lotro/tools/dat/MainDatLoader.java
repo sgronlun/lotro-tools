@@ -18,9 +18,6 @@ import delta.games.lotro.tools.dat.characters.MainSkillDataLoader;
 import delta.games.lotro.tools.dat.characters.MainStatTomesLoader;
 import delta.games.lotro.tools.dat.characters.MainTraitDataLoader;
 import delta.games.lotro.tools.dat.characters.RaceDataLoader;
-import delta.games.lotro.tools.dat.characters.SkillLoader;
-import delta.games.lotro.tools.dat.characters.TraitLoader;
-import delta.games.lotro.tools.dat.characters.VirtueDataLoader;
 import delta.games.lotro.tools.dat.collections.MainDatCollectionsLoader;
 import delta.games.lotro.tools.dat.combat.MainDatCombatLoader;
 import delta.games.lotro.tools.dat.crafting.MainDatCraftingLoader;
@@ -194,16 +191,12 @@ public class MainDatLoader
     deleteFile(GeneratedFiles.NATIONALITIES);
     // - skills
     deleteFile(GeneratedFiles.SKILLS);
-    deleteFile(GeneratedFiles.SKILL_ICONS);
-    deleteDirectory(SkillLoader.SKILL_ICONS_DIR);
+    deleteDirectory(GeneratedFiles.SKILL_ICONS_DIR);
     // - virtues
     deleteFile(GeneratedFiles.VIRTUES);
-    deleteFile(GeneratedFiles.VIRTUE_ICONS);
-    deleteDirectory(VirtueDataLoader.VIRTUE_ICONS_DIR);
     // - traits
     deleteFile(GeneratedFiles.TRAITS);
-    deleteFile(GeneratedFiles.TRAIT_ICONS);
-    deleteDirectory(TraitLoader.TRAIT_ICONS_DIR);
+    deleteDirectory(GeneratedFiles.TRAIT_ICONS_DIR);
     // - stat tomes
     deleteFile(GeneratedFiles.STAT_TOMES);
     // Titles
@@ -239,8 +232,7 @@ public class MainDatLoader
     // Relics
     deleteFile(GeneratedFiles.RELICS);
     deleteFile(GeneratedFiles.RELIC_MELDING_RECIPES);
-    deleteFile(GeneratedFiles.RELIC_ICONS);
-    deleteDirectory(MainDatRelicsLoader.RELIC_ICONS_DIR);
+    deleteDirectory(GeneratedFiles.RELIC_ICONS_DIR);
     // Recipes
     deleteFile(GeneratedFiles.RECIPES);
     // Emotes
@@ -264,12 +256,8 @@ public class MainDatLoader
     deleteFile(GeneratedFiles.COLLECTIONS);
     // Mounts
     deleteFile(GeneratedFiles.MOUNTS);
-    deleteFile(GeneratedFiles.MOUNT_ICONS);
-    deleteDirectory(MountsLoader.MOUNT_ICONS_DIR);
     // Cosmetic pets
     deleteFile(GeneratedFiles.PETS);
-    deleteFile(GeneratedFiles.PET_ICONS);
-    deleteDirectory(CosmeticPetLoader.PET_ICONS_DIR);
     // Vendors
     deleteFile(GeneratedFiles.VENDORS);
     // Barterers
