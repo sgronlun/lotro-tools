@@ -6,7 +6,9 @@ import org.apache.log4j.Logger;
 
 import delta.common.utils.files.FilesDeleter;
 import delta.games.lotro.common.treasure.LootsManager;
+import delta.games.lotro.config.LotroCoreConfig;
 import delta.games.lotro.dat.data.DataFacade;
+import delta.games.lotro.dat.misc.Context;
 import delta.games.lotro.dat.utils.hash.KnownVariablesManager;
 import delta.games.lotro.lore.reputation.FactionsRegistry;
 import delta.games.lotro.tools.dat.agents.mobs.MainDatGenericMobLootLoader;
@@ -83,6 +85,7 @@ public class MainDatLoader
 
   private void load()
   {
+    boolean live=LotroCoreConfig.isLive();
     // Servers
     new MainServersBuilder().doIt();
     // Stats
@@ -116,15 +119,18 @@ public class MainDatLoader
     new MainProgressionsMerger().doIt();
     // Items sets
     new MainDatItemsSetsLoader(_facade).doIt();
-    // Paper items
-    new MainDatPaperItemsLoader(_facade).doIt();
-    // Legendary data
-    new MainDatLegendarySystemLoader(_facade).doIt();
-    new MainDatLegendarySystem2Loader(_facade).doIt();
-    // Legendary titles
-    new MainDatLegendaryTitlesLoader(_facade).doIt();
-    // Relics
-    new MainDatRelicsLoader(_facade).doIt();
+    if (live)
+    {
+      // Paper items
+      new MainDatPaperItemsLoader(_facade).doIt();
+      // Legendary data
+      new MainDatLegendarySystemLoader(_facade).doIt();
+      new MainDatLegendarySystem2Loader(_facade).doIt();
+      // Legendary titles
+      new MainDatLegendaryTitlesLoader(_facade).doIt();
+      // Relics
+      new MainDatRelicsLoader(_facade).doIt();
+    }
     // Crafting
     new MainDatCraftingLoader(_facade).doIt();
     // Recipes
@@ -139,22 +145,31 @@ public class MainDatLoader
     new MainBuffsLoader(_facade).doIt();
     // Trait points
     new TraitPointsRegistryBuilder().doIt();
-    // Mounts
-    new MountsLoader(_facade).doIt();
-    // Cosmetic pets
-    new CosmeticPetLoader(_facade).doIt();
-    // Collections
-    new MainDatCollectionsLoader(_facade,rewardsLoader).doIt();
+    if (live)
+    {
+      // Mounts
+      new MountsLoader(_facade).doIt();
+      // Cosmetic pets
+      new CosmeticPetLoader(_facade).doIt();
+      // Collections
+      new MainDatCollectionsLoader(_facade,rewardsLoader).doIt();
+    }
     // Vendors & barterers
     new MainDatNpcLoader(_facade).doIt();
     // Private encounters
     new MainDatPrivateEncountersLoader(_facade).doIt();
     // Instances tree
-    new MainDatInstancesTreeLoader(_facade).doIt();
+    if (live)
+    {
+      new MainDatInstancesTreeLoader(_facade).doIt();
+    }
     // Containers
     new MainDatContainerLoader(_facade).doIt();
     // Disenchantment
-    new MainDatDisenchantmentsLoader(_facade).doIt();
+    if (live)
+    {
+      new MainDatDisenchantmentsLoader(_facade).doIt();
+    }
     // Mobs
     new MainDatMobsLoader(_facade,LootsManager.getInstance()).doIt();
     new MainDatGenericMobLootLoader(_facade,LootsManager.getInstance()).doIt();
@@ -164,16 +179,22 @@ public class MainDatLoader
     new ReferenceDataGenerator().doIt();
     // Tasks data
     new MainTaskDataBuilder().doIt();
-    // Relics melding recipes
-    new MainDatRelicMeldingRecipesLoader(_facade).doIt();
-    // Allegiances
-    new MainDatAllegiancesLoader(_facade).doIt();
+    if (live)
+    {
+      // Relics melding recipes
+      new MainDatRelicMeldingRecipesLoader(_facade).doIt();
+      // Allegiances
+      new MainDatAllegiancesLoader(_facade).doIt();
+    }
     // Billing groups
     new MainBillingGroupsLoader(_facade).doIt();
-    // Rewards tracks
-    new MainDatRewardsTracksLoader(_facade).doIt();
-    // Hobbies
-    new MainHobbiesLoader(_facade).doIt();
+    if (live)
+    {
+      // Rewards tracks
+      new MainDatRewardsTracksLoader(_facade).doIt();
+      // Hobbies
+      new MainHobbiesLoader(_facade).doIt();
+    }
   }
 
   private void cleanup()
@@ -197,6 +218,7 @@ public class MainDatLoader
     // - traits
     deleteFile(GeneratedFiles.TRAITS);
     deleteDirectory(GeneratedFiles.TRAIT_ICONS_DIR);
+    deleteFile(GeneratedFiles.SKIRMISH_TRAITS);
     // - stat tomes
     deleteFile(GeneratedFiles.STAT_TOMES);
     // Titles
@@ -304,6 +326,11 @@ public class MainDatLoader
 
   private void deleteFile(File toDelete)
   {
+    if (toDelete==null)
+    {
+      LOGGER.warn("Cannot delete null file!");
+      return;
+    }
     if (toDelete.exists())
     {
       boolean ok=toDelete.delete();
@@ -316,6 +343,11 @@ public class MainDatLoader
 
   private void deleteDirectory(File toDelete)
   {
+    if (toDelete==null)
+    {
+      LOGGER.warn("Cannot delete null directory!");
+      return;
+    }
     FilesDeleter deleter=new FilesDeleter(toDelete,null,true);
     deleter.doIt();
   }
@@ -326,6 +358,7 @@ public class MainDatLoader
    */
   public static void main(String[] args)
   {
+    Context.init(LotroCoreConfig.getMode());
     DataFacade facade=new DataFacade();
     new MainDatLoader(facade).doIt();
     facade.dispose();

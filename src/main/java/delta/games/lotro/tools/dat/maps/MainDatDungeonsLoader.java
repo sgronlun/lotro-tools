@@ -3,6 +3,7 @@ package delta.games.lotro.tools.dat.maps;
 import java.io.File;
 
 import delta.games.lotro.dat.data.DataFacade;
+import delta.games.lotro.dat.misc.Context;
 import delta.games.lotro.dat.utils.BufferUtils;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
 
@@ -23,7 +24,7 @@ public class MainDatDungeonsLoader
   public MainDatDungeonsLoader(DataFacade facade)
   {
     _facade=facade;
-    File rootDir=new File("../lotro-maps-db/maps");
+    File rootDir=MapConstants.getMapsDir();
     _basemapsManager=new GeoreferencedBasemapsManager(rootDir);
     _loader=new DungeonLoader(facade,_basemapsManager);
   }
@@ -54,8 +55,13 @@ public class MainDatDungeonsLoader
    */
   public void loadPositions()
   {
-    _loader.loadPositions();
-    _loader.save();
+    // TODO Handle dungeon positions for SoA Book 11, if possible
+    boolean live=Context.isLive();
+    if (live)
+    {
+      _loader.loadPositions();
+      _loader.save();
+    }
   }
 
   /**

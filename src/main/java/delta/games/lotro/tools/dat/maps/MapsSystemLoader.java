@@ -13,7 +13,7 @@ import delta.games.lotro.dat.data.PropertiesSet;
 import delta.games.lotro.dat.data.enums.EnumMapper;
 import delta.games.lotro.dat.data.ui.UIElement;
 import delta.games.lotro.dat.data.ui.UILayout;
-import delta.games.lotro.dat.data.ui.UILayoutLoader;
+import delta.games.lotro.dat.loaders.ui.UILayoutLoader;
 import delta.games.lotro.dat.utils.DatIconsUtils;
 import delta.games.lotro.lore.maps.Area;
 import delta.games.lotro.lore.maps.GeoAreasManager;
@@ -301,9 +301,16 @@ public class MapsSystemLoader
   {
     // Re-parent Deeping-coomb
     ParchmentMap helmsDeep=getMap(268449767);
-    Area deepingCoomb=helmsDeep.removeArea(1879277189);
+    Area deepingCoomb=null;
+    if (helmsDeep!=null)
+    {
+      deepingCoomb=helmsDeep.removeArea(1879277189);
+    }
     ParchmentMap westfold=getMap(268449758);
-    westfold.addArea(deepingCoomb);
+    if ((westfold!=null) && (deepingCoomb!=null))
+    {
+      westfold.addArea(deepingCoomb);
+    }
     // Remove areas from Eriador
     ParchmentMap eriador=getMap(268437557);
     eriador.removeAllAreas();
@@ -328,7 +335,7 @@ public class MapsSystemLoader
   public static void main(String[] args)
   {
     DataFacade facade=new DataFacade();
-    File rootDir=new File("../lotro-maps-db");
+    File rootDir=MapConstants.getRootDir();
     MapsManager mapsManager=new MapsManager(rootDir);
     MapsSystemLoader loader=new MapsSystemLoader(facade,mapsManager);
     loader.doIt();

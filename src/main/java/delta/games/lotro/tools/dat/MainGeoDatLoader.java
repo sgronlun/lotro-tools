@@ -7,9 +7,12 @@ import org.apache.log4j.Logger;
 
 import delta.common.utils.NumericTools;
 import delta.common.utils.files.FilesDeleter;
+import delta.games.lotro.config.LotroCoreConfig;
 import delta.games.lotro.dat.data.DataFacade;
+import delta.games.lotro.dat.misc.Context;
 import delta.games.lotro.tools.dat.maps.MainDatDungeonsLoader;
 import delta.games.lotro.tools.dat.maps.MainDatGeoAreasLoader;
+import delta.games.lotro.tools.dat.maps.MapConstants;
 import delta.games.lotro.tools.dat.maps.MapsDataLoader;
 import delta.games.lotro.tools.dat.maps.landblocks.MainLandblocksBuilder;
 
@@ -21,12 +24,12 @@ public class MainGeoDatLoader
 {
   private static final Logger LOGGER=Logger.getLogger(MainGeoDatLoader.class);
 
-  private static final File ROOT_MAPS_DIR=new File("../lotro-maps-db");
-  private static final File CATEGORIES_DIR=new File(ROOT_MAPS_DIR,"categories");
-  private static final File INDEXES_DIR=new File(ROOT_MAPS_DIR,"indexes");
-  private static final File MAPS_DIR=new File(ROOT_MAPS_DIR,"maps");
-  private static final File MARKERS_DIR=new File(ROOT_MAPS_DIR,"markers");
-  private static final File LINKS=new File(ROOT_MAPS_DIR,"links.xml");
+  private static File ROOT_MAPS_DIR;
+  private static File CATEGORIES_DIR;
+  private static File INDEXES_DIR;
+  private static File MAPS_DIR;
+  private static File MARKERS_DIR;
+  private static File LINKS;
   private DataFacade _facade;
 
   /**
@@ -36,6 +39,12 @@ public class MainGeoDatLoader
   public MainGeoDatLoader(DataFacade facade)
   {
     _facade=facade;
+    ROOT_MAPS_DIR=MapConstants.getRootDir();
+    CATEGORIES_DIR=new File(ROOT_MAPS_DIR,"categories");
+    INDEXES_DIR=new File(ROOT_MAPS_DIR,"indexes");
+    MAPS_DIR=new File(ROOT_MAPS_DIR,"maps");
+    MARKERS_DIR=new File(ROOT_MAPS_DIR,"markers");
+    LINKS=new File(ROOT_MAPS_DIR,"links.xml");
   }
 
   private void doIt()
@@ -46,16 +55,16 @@ public class MainGeoDatLoader
 
   private void load()
   {
-    // Landblocks
+    // Land-blocks
     new MainLandblocksBuilder(_facade).doIt();
     // Dungeons
     MainDatDungeonsLoader dungeonsLoader=new MainDatDungeonsLoader(_facade);
     dungeonsLoader.doIt();
-    // Geographics areas
+    // Geographic areas
     new MainDatGeoAreasLoader(_facade).doIt();
     // Load dungeon positions
     dungeonsLoader.loadPositions();
-    // Maps data (basemaps, markers)
+    // Maps data (base-maps, markers)
     new MapsDataLoader(_facade).doIt();
   }
 
@@ -97,6 +106,11 @@ public class MainGeoDatLoader
 
   private void deleteFile(File toDelete)
   {
+    if (toDelete==null)
+    {
+      LOGGER.warn("Cannot delete null file!");
+      return;
+    }
     if (toDelete.exists())
     {
       boolean ok=toDelete.delete();
@@ -114,6 +128,11 @@ public class MainGeoDatLoader
 
   private void deleteDirectory(File toDelete, FileFilter filter)
   {
+    if (toDelete==null)
+    {
+      LOGGER.warn("Cannot delete null directory!");
+      return;
+    }
     FilesDeleter deleter=new FilesDeleter(toDelete,filter,true);
     deleter.doIt();
   }
@@ -124,6 +143,7 @@ public class MainGeoDatLoader
    */
   public static void main(String[] args)
   {
+    Context.init(LotroCoreConfig.getMode());
     DataFacade facade=new DataFacade();
     new MainGeoDatLoader(facade).doIt();
     facade.dispose();

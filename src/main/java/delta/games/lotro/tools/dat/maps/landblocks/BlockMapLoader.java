@@ -10,6 +10,7 @@ import delta.games.lotro.dat.archive.DatFilesManager;
 import delta.games.lotro.dat.data.DataFacade;
 import delta.games.lotro.dat.data.PropertiesSet;
 import delta.games.lotro.dat.data.PropertiesSet.PropertyValue;
+import delta.games.lotro.dat.misc.Context;
 import delta.games.lotro.dat.utils.BufferUtils;
 import delta.games.lotro.tools.dat.maps.data.PropertiesDescriptor;
 
@@ -44,18 +45,7 @@ public class BlockMapLoader
   public PropertiesSet loadPropertiesForMapBlock(int region, int blockX, int blockY)
   {
     long blockMapDID=0x80100000L+(region*0x10000)+(blockX*0x100)+blockY;
-    return loadPropertiesForMapBlock(blockMapDID);
-  }
-
-  /**
-   * Load the properties for a map block.
-   * @param blockMapDID Map block identifier.
-   * @return the loaded properties or <code>null</code> if no such block.
-   */
-  public PropertiesSet loadPropertiesForMapBlock(long blockMapDID)
-  {
     DatFilesManager datFilesMgr=_facade.getDatFilesManager();
-    int region=(int)((blockMapDID&0xF0000)>>16);
     DATArchive map=datFilesMgr.getArchive(DATFilesConstants.MAP_SEED+region);
     byte[] data=map.loadEntry(blockMapDID);
     if (data==null)
@@ -71,15 +61,16 @@ public class BlockMapLoader
     long did=BufferUtils.readUInt32AsLong(bis);
     if (did!=blockMapDID)
     {
-      throw new IllegalArgumentException("Expected DID for block map: "+blockMapDID);
+      throw new IllegalArgumentException("Expected DID for block map: region="+region+", blockX="+blockX+", blockY="+blockY);
     }
     PropertiesSet props=new PropertiesSet();
     int count=BufferUtils.readTSize(bis);
     //System.out.println(count+" entries in this block map!");
+    boolean isLive=Context.isLive();
     for(int i=0;i<count;i++)
     {
       int key=BufferUtils.readUInt32(bis);
-      int index=BufferUtils.readUInt16(bis);
+      int index=isLive?BufferUtils.readUInt16(bis):BufferUtils.readUInt8(bis);
       PropertyValue value=descriptor.getPropertyValue(key,index);
       if (value!=null)
       {
@@ -90,7 +81,7 @@ public class BlockMapLoader
     Integer areaDID=(Integer)props.getProperty("Area_DID");
     if (areaDID==null)
     {
-      LOGGER.warn("No area DID for land block: "+blockMapDID);
+      //LOGGER.warn("No area DID for land block: region="+region+", blockX="+blockX+", blockY="+blockY);
     }
     int available=bis.available();
     if (available>0)

@@ -14,6 +14,7 @@ import delta.games.lotro.character.classes.ClassTrait;
 import delta.games.lotro.character.classes.InitialGearDefinition;
 import delta.games.lotro.character.classes.InitialGearElement;
 import delta.games.lotro.character.classes.io.xml.ClassDescriptionXMLWriter;
+import delta.games.lotro.character.classes.proficiencies.ClassProficiencies;
 import delta.games.lotro.character.skills.SkillDescription;
 import delta.games.lotro.character.skills.SkillsManager;
 import delta.games.lotro.character.stats.BasicStatsSet;
@@ -31,6 +32,7 @@ import delta.games.lotro.dat.DATConstants;
 import delta.games.lotro.dat.data.DataFacade;
 import delta.games.lotro.dat.data.PropertiesSet;
 import delta.games.lotro.dat.utils.DatIconsUtils;
+import delta.games.lotro.lore.items.ArmourType;
 import delta.games.lotro.tools.dat.GeneratedFiles;
 import delta.games.lotro.tools.dat.utils.DatEnumsUtils;
 import delta.games.lotro.tools.dat.utils.DatUtils;
@@ -85,10 +87,13 @@ public class CharacterClassDataLoader
     DatIconsUtils.buildImageFile(_facade,classIconId,classIconFile);
     classDescription.setIconId(classIconId);
     // Small size (32 pixels)
-    int classSmallIconId=((Integer)classInfo.getProperty("AdvTable_ClassSmallIcon")).intValue();
-    File smallClassIconFile=getIconFile(characterClass,"small");
-    DatIconsUtils.buildImageFile(_facade,classSmallIconId,smallClassIconFile);
-    classDescription.setSmallIconId(classIconId);
+    Integer classSmallIconId=(Integer)classInfo.getProperty("AdvTable_ClassSmallIcon");
+    if (classSmallIconId!=null)
+    {
+      File smallClassIconFile=getIconFile(characterClass,"small");
+      DatIconsUtils.buildImageFile(_facade,classSmallIconId.intValue(),smallClassIconFile);
+    classDescription.setSmallIconId(classSmallIconId.intValue());
+    }
     // Tactical DPS name
     String tacticalDpsName=DatUtils.getStringProperty(properties,"AdvTable_TacticalDPSName");
     classDescription.setTacticalDpsStatName(tacticalDpsName);
@@ -122,6 +127,10 @@ public class CharacterClassDataLoader
     }
     // Proficiencies
     _proficiencies.handleClass(classDescription);
+    // Armour type for mitigations
+    ArmourType armourType=getArmourTypeForMitigations(characterClass);
+    ClassProficiencies proficiencies=classDescription.getProficiencies();
+    proficiencies.setArmourTypeForMitigations(armourType);
     // Default buffs
     /*
     if (characterClass==CharacterClass.CAPTAIN)
@@ -141,6 +150,27 @@ AdvTable_AdvancedCharacterStart_AdvancedTierCASI_List:
     // Class deeds?
     // AdvTable_AccomplishmentDirectory: 1879064046
     _classes.add(classDescription);
+  }
+
+  private ArmourType getArmourTypeForMitigations(CharacterClass cClass)
+  {
+    /*
+     * See class properties:
+AdvTable_ArmorDefense_Points_CalcType: 14 (HeavyArmorDefense)
+AdvTable_ArmorDefense_Points_NonCommon_CalcType: 14 (HeavyArmorDefense)
+     */
+    if ((cClass==CharacterClass.HUNTER) || (cClass==CharacterClass.BURGLAR)
+        || (cClass==CharacterClass.WARDEN))
+    {
+      return ArmourType.MEDIUM;
+    }
+    if ((cClass==CharacterClass.CHAMPION) || (cClass==CharacterClass.GUARDIAN)
+        || (cClass==CharacterClass.CAPTAIN) || (cClass==CharacterClass.BEORNING)
+        || (cClass==CharacterClass.BRAWLER) )
+    {
+      return ArmourType.HEAVY;
+    }
+    return ArmourType.LIGHT;
   }
 
   private File getIconFile(CharacterClass characterClass, String size)
@@ -266,6 +296,10 @@ AdvTable_AdvancedCharacterStart_AdvancedTierCASI_List:
   private void loadStatDerivations(CharacterClass characterClass, PropertiesSet properties)
   {
     Object[] derivedStatsProperties=(Object[])properties.getProperty("AdvTable_DerivedStat_Configuration");
+    if (derivedStatsProperties==null)
+    {
+      return;
+    }
     for(Object derivedStatPropertiesObj : derivedStatsProperties)
     {
       PropertiesSet derivedStatProperties=(PropertiesSet)derivedStatPropertiesObj;
