@@ -19,7 +19,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/delta-common"/>
-	<classpathentry kind="lib" path="C:/Users/SIMON_2016/LotRO Companion/app/lib/delta-lotro-dat-utils-8.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/delta-lotro-dat-utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/delta-updates-manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lotro-jukebox-core"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
@@ -33,7 +33,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/delta-json"/>
-	<classpathentry kind="lib" path="C:/Users/SIMON_2016/LotRO Companion/app/kickstarter/delta-launcher-1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
